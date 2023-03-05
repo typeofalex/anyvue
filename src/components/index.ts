@@ -1,0 +1,1 @@
+export { default as AnyVue } from './AnyVue.vue';
