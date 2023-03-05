@@ -16,7 +16,7 @@ import { getCurrentInstance, onBeforeUnmount, useAttrs, PropType } from "vue";
 type Constructable = { new(...args: any[]): any }
 type Creator = (...args: any[]) => Object
 const props = defineProps({
-  construct: { type: Object as PropType<Creator | Constructable>, required: true },
+  construct: { type: Function as PropType<Creator | Constructable | Function>, required: true },
   arguments: { type: Array, required: false },
   cleanup:  { type: Function, required: false },
   isFunction:  { type: Boolean, default: false },
