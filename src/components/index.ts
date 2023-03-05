@@ -1,1 +1,1 @@
-export { default as AnyVue } from './AnyVue.vue.vue';
+export { default as AnyVue } from './AnyVue.vue';

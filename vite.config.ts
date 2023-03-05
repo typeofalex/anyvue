@@ -40,7 +40,7 @@ export default defineConfig({
       input: {
         main: path.resolve(__dirname, "src/components/main.ts")
       },
-      external: ['vue'],
+      external: ['vue', '@babel/types'],
       output: {
         assetFileNames: (assetInfo) => {
           if (assetInfo.name === 'main.css') return 'anyvue.css';

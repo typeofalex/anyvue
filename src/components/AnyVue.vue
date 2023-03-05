@@ -1,5 +1,5 @@
 <template>
-<slot></slot>
+  <slot></slot>
 </template>
 
 <script lang="ts">
@@ -10,11 +10,13 @@ export default {
 
 <script setup lang="ts">
 // Needed types
-import { getCurrentInstance, onBeforeUnmount, useAttrs, defineProps } from "vue"
+import { getCurrentInstance, onBeforeUnmount, useAttrs, PropType } from "vue";
 
 // Props
+type Constructable = { new(...args: any[]): any }
+type Creator = (...args: any[]) => Object
 const props = defineProps({
-  constructor: { type: Function, required: true },
+  construct: { type: Object as PropType<Creator | Constructable>, required: true },
   arguments: { type: Array, required: false },
   cleanup:  { type: Function, required: false },
   isFunction:  { type: Boolean, default: false },
@@ -24,12 +26,11 @@ const props = defineProps({
 })
 
 // Create the object
-type Constructable = { new(...args: any[]): any }
-const constructor = props.constructor as Constructable
+const construct: Constructable | Creator = props.construct as Constructable | Creator
 const hasArguments = props.arguments && props.arguments.length > 0
 const object = props.modelValue ? props.modelValue : props.isFunction ?
-  ( hasArguments ? props.constructor(...props.arguments as any) : props.constructor() ) :
-  ( hasArguments ? new constructor(...props.arguments as any) : new constructor() )
+    ( hasArguments ? (props.construct as Creator)(...props.arguments as any) : (props.construct as Creator)() ) :
+    ( hasArguments ? new (construct as Constructable)(...props.arguments as any) : new (construct as Constructable)() )
 
 // Apply attributes to value
 const attrs = useAttrs()
@@ -40,10 +41,10 @@ for(const key in attrs) {
 // parenting if it is a child
 const instance = getCurrentInstance()
 if (
-  props.append
-  && instance && instance.parent
-  && instance.parent.exposed
-  && instance.parent.exposed.object
+    props.append
+    && instance && instance.parent
+    && instance.parent.exposed
+    && instance.parent.exposed.object
 ) {
   props.append(instance.parent.exposed.object, object)
 }
